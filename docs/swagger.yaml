@@ -1,0 +1,335 @@
+definitions:
+  bookmark.createBookmarkRequest:
+    properties:
+      description:
+        example: Google
+        maxLength: 255
+        type: string
+      url:
+        example: https://www.google.com
+        maxLength: 2048
+        type: string
+    required:
+    - url
+    type: object
+  bookmark.createBookmarkResponse:
+    properties:
+      data:
+        $ref: '#/definitions/model.Bookmark'
+      message:
+        type: string
+    type: object
+  bookmark.updateBookmarkRequest:
+    properties:
+      description:
+        type: string
+      url:
+        type: string
+    type: object
+  link.shortenInputBody:
+    properties:
+      exp:
+        minimum: 60
+        type: integer
+      url:
+        type: string
+    required:
+    - exp
+    - url
+    type: object
+  model.Bookmark:
+    properties:
+      code:
+        type: string
+      created_at:
+        type: string
+      description:
+        type: string
+      id:
+        type: string
+      updated_at:
+        type: string
+      url:
+        type: string
+      user_id:
+        type: string
+    type: object
+  model.HealthCheckResponse:
+    properties:
+      instance_id:
+        type: string
+      message:
+        type: string
+      service_name:
+        type: string
+    type: object
+info:
+  contact: {}
+paths:
+  /gencode:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      summary: Generate a random code
+      tags:
+      - code
+  /health-check:
+    get:
+      consumes:
+      - application/json
+      description: ping and pong with redis server
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.HealthCheckResponse'
+      summary: check redis health
+      tags:
+      - health-check
+  /v1/bookmarks:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve a list of bookmarks for the authenticated user with pagination
+        and sorting
+      parameters:
+      - default: 1
+        description: Page number
+        example: 1
+        in: query
+        name: page
+        type: integer
+      - default: 5
+        description: Number of items per page
+        example: 5
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            properties:
+              data:
+                items:
+                  $ref: '#/definitions/model.Bookmark'
+                type: array
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            properties:
+              message:
+                type: string
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            properties:
+              message:
+                type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            properties:
+              message:
+                type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: List bookmarks
+      tags:
+      - Bookmarks
+    post:
+      consumes:
+      - application/json
+      description: Create a new bookmark for the authenticated user
+      parameters:
+      - description: Create Bookmark Request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/bookmark.createBookmarkRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/bookmark.createBookmarkResponse'
+        "400":
+          description: Bad Request
+          schema:
+            properties:
+              message:
+                type: string
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            properties:
+              message:
+                type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            properties:
+              message:
+                type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Create a new bookmark
+      tags:
+      - Bookmarks
+  /v1/bookmarks/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a new bookmark for the authenticated user
+      parameters:
+      - description: Bookmark ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            properties:
+              message:
+                type: string
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            properties:
+              message:
+                type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Delete a new bookmark
+      tags:
+      - Bookmarks
+    put:
+      consumes:
+      - application/json
+      description: Update a new bookmark for the authenticated user
+      parameters:
+      - description: Bookmark ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Create Bookmark Request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/bookmark.updateBookmarkRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            properties:
+              message:
+                type: string
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            properties:
+              message:
+                type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Update a new bookmark
+      tags:
+      - Bookmarks
+  /v1/bookmarks/import:
+    post:
+      consumes:
+      - multipart/form-data
+      description: Accepts a csv file and import bookmarks
+      parameters:
+      - description: CSV file
+        in: formData
+        name: file
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            properties:
+              message:
+                type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Upload and parse a csv file of bookmarks
+      tags:
+      - Bookmarks
+  /v1/links/redirect/{code}:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Shorten code
+        in: path
+        name: code
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "302":
+          description: Found
+      tags:
+      - link
+  /v1/links/shorten:
+    post:
+      consumes:
+      - application/json
+      description: Generate shorten url based on original url that last upto 7 days
+      parameters:
+      - description: Input required
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/link.shortenInputBody'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Generate shorten url based on original url that last upto 7 days
+      tags:
+      - link
+swagger: "2.0"
