@@ -47,6 +47,6 @@ WORKDIR /app
 
 COPY --from=build /opt/app/bookmark-service /app/bookmark-service
 COPY --from=build /opt/app/docs /app/docs
-COPY --from=build /opt/app/migrations /app/migrations
+COPY --from=build /opt/app/migration /app/migration
 
 CMD ["/app/bookmark-service"]
