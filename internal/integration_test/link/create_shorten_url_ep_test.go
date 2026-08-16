@@ -1,0 +1,74 @@
+package link
+
+import (
+	"net/http"
+	"net/http/httptest"
+	"strings"
+	"testing"
+
+	"github.com/HemlockPham7/bookmark-service/internal/api"
+	redisPkg "github.com/HemlockPham7/common-libs/pkg/redis"
+	"github.com/HemlockPham7/common-libs/pkg/sqldb"
+	"github.com/gin-gonic/gin"
+	"github.com/stretchr/testify/assert"
+)
+
+func TestLinkEndpoint_CreateShortenUrl(t *testing.T) {
+	t.Parallel()
+
+	testCases := []struct {
+		name string
+
+		setupTestHTTP func(api api.Engine) *httptest.ResponseRecorder
+
+		expectedStatusCode   int
+		expectedResponseBody string
+	}{
+		{
+			name: "create shorten url successfully",
+
+			setupTestHTTP: func(api api.Engine) *httptest.ResponseRecorder {
+				req := httptest.NewRequest(http.MethodPost, "/v1/links/shorten", strings.NewReader(`{"url":"https://www.google.com","exp":300}`))
+				req.Header.Set("Content-Type", "application/json")
+
+				rec := httptest.NewRecorder()
+				api.ServeHTTP(rec, req)
+				return rec
+			},
+
+			expectedStatusCode:   http.StatusOK,
+			expectedResponseBody: `"code":`,
+		},
+		{
+			name: "create shorten url successfully",
+
+			setupTestHTTP: func(api api.Engine) *httptest.ResponseRecorder {
+				req := httptest.NewRequest(http.MethodPost, "/v1/links/shorten", strings.NewReader(`{"url":"","exp":10}`))
+				req.Header.Set("Content-Type", "application/json")
+
+				rec := httptest.NewRecorder()
+				api.ServeHTTP(rec, req)
+				return rec
+			},
+
+			expectedStatusCode:   http.StatusBadRequest,
+			expectedResponseBody: `{"message":"Input error",`,
+		},
+	}
+
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			t.Parallel()
+
+			recorder := tc.setupTestHTTP(api.NewEngine(&api.EngineOpts{
+				App:         gin.Default(),
+				Cfg:         &api.Config{},
+				RedisClient: redisPkg.InitMockRedis(t),
+				DbClient:    sqldb.InitMockDB(t),
+			}))
+
+			assert.Equal(t, tc.expectedStatusCode, recorder.Code)
+			assert.Contains(t, recorder.Body.String(), tc.expectedResponseBody)
+		})
+	}
+}
