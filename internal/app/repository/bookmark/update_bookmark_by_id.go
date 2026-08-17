@@ -22,7 +22,7 @@ func (r *bookmarkRepository) UpdateBookmarkByID(ctx context.Context, updatedBook
 	}
 
 	if result.RowsAffected == 0 {
-		return nil, dbutils.ErrRecordNotFoundType
+		return nil, dbutils.ErrRecordNotFound
 	}
 
 	return returnedBookmark, nil
