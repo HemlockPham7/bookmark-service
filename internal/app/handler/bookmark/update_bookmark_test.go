@@ -1,21 +1,20 @@
 package bookmark
 
 import (
+	"encoding/json"
+	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"strings"
 	"testing"
 
-	"github.com/HemlockPham7/bookmark-service/internal/app/model"
-	"github.com/HemlockPham7/bookmark-service/internal/app/service/bookmark"
 	mock_bookmark "github.com/HemlockPham7/bookmark-service/internal/app/service/bookmark/mocks"
-	"github.com/HemlockPham7/bookmark-service/internal/integration_test/data/fixtures"
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/stretchr/testify/assert"
 )
 
-func TestBookmarkHandler_GetBookmarks(t *testing.T) {
+func TestBookmarkHandler_UpdateBookmarkByID(t *testing.T) {
 	t.Parallel()
 
 	testCases := []struct {
@@ -28,41 +27,27 @@ func TestBookmarkHandler_GetBookmarks(t *testing.T) {
 		expectedResponse string
 	}{
 		{
-			name: "successful list bookmarks",
+			name: "successful update bookmark by ID",
 
 			setupRequest: func(ctx *gin.Context) {
-				ctx.Request = httptest.NewRequest("GET", "/v1/bookmarks?page=1&limit=2", nil)
-				ctx.Request.Header.Set("Content-Type", "application/json")
-				ctx.Set("claims", jwt.MapClaims{"sub": "user-123"})
+				setupUpdateBookmarkRequest(ctx, "d7c13097-67a7-4eae-a60e-0b9b533b7bd6", "updated description", "updated url", true)
 			},
 
 			setupMockSvc: func(ctx *gin.Context) *mock_bookmark.Service {
 				mockService := mock_bookmark.NewService(t)
-				mockService.On("GetBookmarks", ctx, "user-123", 1, 2).
-					Return(&bookmark.GetBookmarksResult{
-						[]*model.Bookmark{
-							{
-								Base:        fixtures.GetTestBase("bookmark-456"),
-								Description: "bookmark description",
-								URL:         "bookmark url",
-								Code:        "bookmark",
-								UserID:      "user-123",
-							},
-						},
-						int64(1),
-					}, nil)
+				mockService.On("UpdateBookmarkByID", ctx, "updated description", "updated url", "d7c13097-67a7-4eae-a60e-0b9b533b7bd4", "d7c13097-67a7-4eae-a60e-0b9b533b7bd6").
+					Return(nil, nil)
 				return mockService
 			},
 
 			expectedCode:     http.StatusOK,
-			expectedResponse: `{"data":[{"id":"bookmark-456","created_at":"2023-01-01T00:00:00Z","updated_at":"2023-01-01T00:00:00Z","description":"bookmark description","url":"bookmark url","code":"bookmark","user_id":"user-123"}],"pagination":{"page":1,"limit":2,"total":1}}`,
+			expectedResponse: `{"message":"Success"}`,
 		},
 		{
-			name: "unauthorized user",
+			name: "claim not exist",
 
 			setupRequest: func(ctx *gin.Context) {
-				ctx.Request = httptest.NewRequest("GET", "/v1/bookmarks?page=1&limit=2", nil)
-				ctx.Request.Header.Set("Content-Type", "application/json")
+				setupUpdateBookmarkRequest(ctx, "d7c13097-67a7-4eae-a60e-0b9b533b7bd6", "updated description", "updated url", false)
 			},
 
 			setupMockSvc: func(ctx *gin.Context) *mock_bookmark.Service {
@@ -73,17 +58,29 @@ func TestBookmarkHandler_GetBookmarks(t *testing.T) {
 			expectedResponse: `{"message":"claim not exist"}`,
 		},
 		{
-			name: "internal service",
+			name: "Bookmark ID is required",
 
 			setupRequest: func(ctx *gin.Context) {
-				ctx.Request = httptest.NewRequest("GET", "/v1/bookmarks?page=1&limit=2", nil)
-				ctx.Request.Header.Set("Content-Type", "application/json")
-				ctx.Set("claims", jwt.MapClaims{"sub": "user-123"})
+				setupUpdateBookmarkRequest(ctx, "", "updated description", "updated url", true)
+			},
+
+			setupMockSvc: func(ctx *gin.Context) *mock_bookmark.Service {
+				return mock_bookmark.NewService(t)
+			},
+
+			expectedCode:     http.StatusBadRequest,
+			expectedResponse: `{"message":"Bookmark ID is required"}`,
+		},
+		{
+			name: "internal error",
+
+			setupRequest: func(ctx *gin.Context) {
+				setupUpdateBookmarkRequest(ctx, "d7c13097-67a7-4eae-a60e-0b9b533b7bd6", "updated description", "updated url", true)
 			},
 
 			setupMockSvc: func(ctx *gin.Context) *mock_bookmark.Service {
 				mockService := mock_bookmark.NewService(t)
-				mockService.On("GetBookmarks", ctx, "user-123", 1, 2).
+				mockService.On("UpdateBookmarkByID", ctx, "updated description", "updated url", "d7c13097-67a7-4eae-a60e-0b9b533b7bd4", "d7c13097-67a7-4eae-a60e-0b9b533b7bd6").
 					Return(nil, assert.AnError)
 				return mockService
 			},
@@ -104,10 +101,32 @@ func TestBookmarkHandler_GetBookmarks(t *testing.T) {
 
 			handler := NewHandler(serviceMock, nil)
 
-			handler.GetBookmarks(ctx)
+			handler.UpdateBookmarkByID(ctx)
 
 			assert.Equal(t, tc.expectedCode, rec.Code)
 			assert.Equal(t, tc.expectedResponse, strings.TrimSpace(rec.Body.String()))
+		})
+	}
+}
+
+func setupUpdateBookmarkRequest(ctx *gin.Context, bookmarkID, description, url string, haveClaim bool) {
+	input := &updateBookmarkRequest{
+		Description: description,
+		URL:         url,
+	}
+	reqBody, _ := json.Marshal(input)
+
+	target := fmt.Sprintf("/v1/bookmarks/%s", bookmarkID)
+
+	ctx.Request = httptest.NewRequest(http.MethodPut, target, strings.NewReader(string(reqBody)))
+	ctx.Request.Header.Set("Content-Type", "application/json")
+	if bookmarkID != "" {
+		ctx.Params = gin.Params{{Key: "id", Value: bookmarkID}}
+	}
+
+	if haveClaim {
+		ctx.Set("claims", jwt.MapClaims{
+			"sub": "d7c13097-67a7-4eae-a60e-0b9b533b7bd4",
 		})
 	}
 }

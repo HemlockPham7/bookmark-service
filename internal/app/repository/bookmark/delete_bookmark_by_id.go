@@ -8,9 +8,14 @@ import (
 )
 
 func (r *bookmarkRepository) DeleteBookmarkByID(ctx context.Context, userID, bookmarkID string) error {
-	err := r.db.WithContext(ctx).Model(&model.Bookmark{}).Where("id = ? AND user_id = ?", bookmarkID, userID).Delete(&model.Bookmark{}).Error
-	if err != nil {
-		return dbutils.CatchDBError(err)
+	result := r.db.WithContext(ctx).Model(&model.Bookmark{}).Where("id = ? AND user_id = ?", bookmarkID, userID).Delete(&model.Bookmark{})
+
+	if result.Error != nil {
+		return dbutils.CatchDBError(result.Error)
+	}
+
+	if result.RowsAffected == 0 {
+		return dbutils.ErrRecordNotFound
 	}
 	return nil
 }
