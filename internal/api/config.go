@@ -17,7 +17,7 @@ type Config struct {
 // NewConfig creates a new config
 func NewConfig() (*Config, error) {
 	cfg := &Config{}
-	err := envconfig.Process("api", cfg)
+	err := envconfig.Process("bookmark", cfg)
 	if err != nil {
 		return nil, err
 	}

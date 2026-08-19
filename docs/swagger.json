@@ -1,8 +1,12 @@
 {
     "swagger": "2.0",
     "info": {
-        "contact": {}
+        "description": "This is the API documentation for the Bookmark service.",
+        "title": "Bookmark Service API",
+        "contact": {},
+        "version": "1.0.0"
     },
+    "basePath": "/",
     "paths": {
         "/gencode": {
             "get": {
@@ -519,6 +523,13 @@
                     "type": "string"
                 }
             }
+        }
+    },
+    "securityDefinitions": {
+        "BearerAuth": {
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
         }
     }
 }
