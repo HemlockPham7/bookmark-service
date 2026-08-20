@@ -151,7 +151,7 @@ func TestBookmarkEndpoint_CreateBookmark(t *testing.T) {
 
 func setupRequest(url, description string, haveClaims bool) (*http.Request, *httptest.ResponseRecorder) {
 	reqBody := fmt.Sprintf(`{"url":"%s","description":"%s"}`, url, description)
-	req := httptest.NewRequest(http.MethodPost, "/v1/bookmarks/", strings.NewReader(reqBody))
+	req := httptest.NewRequest(http.MethodPost, "/v1/bookmarks", strings.NewReader(reqBody))
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("Authorization", "Bearer valid_jwt_token")
 
