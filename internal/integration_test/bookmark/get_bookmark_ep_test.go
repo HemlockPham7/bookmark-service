@@ -80,7 +80,7 @@ func TestBookmarkEndpoint_GetBookmark(t *testing.T) {
 }
 
 func setupRequestGetBookmark(haveClaims bool) (*http.Request, *httptest.ResponseRecorder) {
-	req := httptest.NewRequest(http.MethodGet, "/v1/bookmarks?page=1&limit=2", nil)
+	req := httptest.NewRequest(http.MethodGet, "/v1/bookmarks/get?page=1&limit=2", nil)
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("Authorization", "Bearer valid_jwt_token")
 

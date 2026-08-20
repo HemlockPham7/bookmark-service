@@ -161,7 +161,7 @@ func (e *engine) initRoutes() {
 			bookmarksRoutes := privateV1Routes.Group("/bookmarks")
 			{
 				bookmarksRoutes.POST("", allHandlers.bookmarkHandler.CreateBookmark)
-				bookmarksRoutes.GET("", allHandlers.bookmarkHandler.GetBookmarks)
+				bookmarksRoutes.GET("/get", allHandlers.bookmarkHandler.GetBookmarks)
 				bookmarksRoutes.POST("/import", allHandlers.bookmarkHandler.ImportBookmarks)
 				bookmarksRoutes.DELETE("/:id", allHandlers.bookmarkHandler.DeleteBookmarkByID)
 				bookmarksRoutes.PUT("/:id", allHandlers.bookmarkHandler.UpdateBookmarkByID)

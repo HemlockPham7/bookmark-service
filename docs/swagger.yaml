@@ -98,62 +98,6 @@ paths:
       tags:
       - health-check
   /v1/bookmarks:
-    get:
-      consumes:
-      - application/json
-      description: Retrieve a list of bookmarks for the authenticated user with pagination
-        and sorting
-      parameters:
-      - default: 1
-        description: Page number
-        example: 1
-        in: query
-        name: page
-        type: integer
-      - default: 5
-        description: Number of items per page
-        example: 5
-        in: query
-        name: limit
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: Success
-          schema:
-            properties:
-              data:
-                items:
-                  $ref: '#/definitions/model.Bookmark'
-                type: array
-            type: object
-        "400":
-          description: Bad Request
-          schema:
-            properties:
-              message:
-                type: string
-            type: object
-        "401":
-          description: Unauthorized
-          schema:
-            properties:
-              message:
-                type: string
-            type: object
-        "500":
-          description: Internal Server Error
-          schema:
-            properties:
-              message:
-                type: string
-            type: object
-      security:
-      - BearerAuth: []
-      summary: List bookmarks
-      tags:
-      - Bookmarks
     post:
       consumes:
       - application/json
@@ -267,6 +211,63 @@ paths:
       security:
       - BearerAuth: []
       summary: Update a new bookmark
+      tags:
+      - Bookmarks
+  /v1/bookmarks/get:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve a list of bookmarks for the authenticated user with pagination
+        and sorting
+      parameters:
+      - default: 1
+        description: Page number
+        example: 1
+        in: query
+        name: page
+        type: integer
+      - default: 5
+        description: Number of items per page
+        example: 5
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            properties:
+              data:
+                items:
+                  $ref: '#/definitions/model.Bookmark'
+                type: array
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            properties:
+              message:
+                type: string
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            properties:
+              message:
+                type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            properties:
+              message:
+                type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: List bookmarks
       tags:
       - Bookmarks
   /v1/bookmarks/import:

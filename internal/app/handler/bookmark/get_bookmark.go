@@ -31,7 +31,7 @@ type getBookmarksRequest struct {
 // @Failure      401    {object}  object{message=string}
 // @Failure      500    {object}  object{message=string}
 // @Security	 BearerAuth
-// @Router       /v1/bookmarks [get]
+// @Router       /v1/bookmarks/get [get]
 func (h *bookmarkHandler) GetBookmarks(c *gin.Context) {
 	request, uid, err := requestutils.BindInputFromRequestWithAuth[getBookmarksRequest](c)
 	if err != nil {

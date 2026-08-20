@@ -31,7 +31,7 @@ func TestBookmarkHandler_GetBookmarks(t *testing.T) {
 			name: "successful list bookmarks",
 
 			setupRequest: func(ctx *gin.Context) {
-				ctx.Request = httptest.NewRequest("GET", "/v1/bookmarks?page=1&limit=2", nil)
+				ctx.Request = httptest.NewRequest("GET", "/v1/bookmarks/get?page=1&limit=2", nil)
 				ctx.Request.Header.Set("Content-Type", "application/json")
 				ctx.Set("claims", jwt.MapClaims{"sub": "user-123"})
 			},
@@ -61,7 +61,7 @@ func TestBookmarkHandler_GetBookmarks(t *testing.T) {
 			name: "unauthorized user",
 
 			setupRequest: func(ctx *gin.Context) {
-				ctx.Request = httptest.NewRequest("GET", "/v1/bookmarks?page=1&limit=2", nil)
+				ctx.Request = httptest.NewRequest("GET", "/v1/bookmarks/get?page=1&limit=2", nil)
 				ctx.Request.Header.Set("Content-Type", "application/json")
 			},
 
@@ -76,7 +76,7 @@ func TestBookmarkHandler_GetBookmarks(t *testing.T) {
 			name: "internal service",
 
 			setupRequest: func(ctx *gin.Context) {
-				ctx.Request = httptest.NewRequest("GET", "/v1/bookmarks?page=1&limit=2", nil)
+				ctx.Request = httptest.NewRequest("GET", "/v1/bookmarks/get?page=1&limit=2", nil)
 				ctx.Request.Header.Set("Content-Type", "application/json")
 				ctx.Set("claims", jwt.MapClaims{"sub": "user-123"})
 			},
