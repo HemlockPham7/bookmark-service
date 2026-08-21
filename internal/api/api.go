@@ -24,6 +24,8 @@ import (
 	"github.com/HemlockPham7/common-libs/pkg/ratelimitutils"
 	"github.com/HemlockPham7/common-libs/pkg/utils"
 	"github.com/gin-gonic/gin"
+	"github.com/newrelic/go-agent/v3/integrations/nrgin"
+	"github.com/newrelic/go-agent/v3/newrelic"
 	"github.com/redis/go-redis/v9"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
@@ -44,6 +46,7 @@ type engine struct {
 	dbClient    *gorm.DB
 	jwtGen      jwtutils.JWTGenerator
 	jwtVal      jwtutils.JWTValidator
+	nrClient    *newrelic.Application
 }
 
 type EngineOpts struct {
@@ -53,6 +56,7 @@ type EngineOpts struct {
 	DbClient    *gorm.DB
 	JwtGen      jwtutils.JWTGenerator
 	JwtVal      jwtutils.JWTValidator
+	NrClient    *newrelic.Application
 }
 
 // NewEngine creates a new engine
@@ -64,6 +68,7 @@ func NewEngine(opts *EngineOpts) Engine {
 		dbClient:    opts.DbClient,
 		jwtGen:      opts.JwtGen,
 		jwtVal:      opts.JwtVal,
+		nrClient:    opts.NrClient,
 	}
 	app.initRoutes()
 	return app
@@ -141,6 +146,9 @@ func (e *engine) initMiddlewares() middlewares {
 func (e *engine) initRoutes() {
 	allHandlers := e.initHandlers()
 	allMiddlewares := e.initMiddlewares()
+
+	// init newrelic
+	e.app.Use(nrgin.Middleware(e.nrClient))
 
 	// gencode
 	e.app.GET("/gencode", allHandlers.genCodeHandler.GenerateCode)
