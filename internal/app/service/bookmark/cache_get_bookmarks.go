@@ -11,7 +11,7 @@ import (
 
 func (s *bookmarkServiceWithCache) GetBookmarks(ctx context.Context, userID string, page, limit int) (*GetBookmarksResult, error) {
 	nrTransaction := newrelic.FromContext(ctx)
-	span := nrTransaction.StartSegment("GetBookmarks_ServiceWithCache")
+	span := nrTransaction.StartSegment("GetBookmarks_BookmarkServiceWithCache")
 	defer span.End()
 
 	// tao cache key

@@ -5,10 +5,14 @@ import (
 	"fmt"
 
 	"github.com/HemlockPham7/bookmark-service/internal/app/model"
+	"github.com/newrelic/go-agent/v3/newrelic"
 	"github.com/rs/zerolog/log"
 )
 
 func (s *bookmarkServiceWithCache) CreateBookmark(ctx context.Context, description, url, userID string) (*model.Bookmark, error) {
+	span := newrelic.FromContext(ctx).StartSegment("CreateBookmark_BookmarkServiceWithCache")
+	defer span.End()
+
 	cacheGroupKey := fmt.Sprintf(getBookmarksCacheGroupKeyFormat, userID)
 	err := s.c.DeleteCache(ctx, cacheGroupKey)
 	if err != nil {

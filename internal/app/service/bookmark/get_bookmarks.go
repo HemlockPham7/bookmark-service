@@ -13,7 +13,7 @@ type GetBookmarksResult struct {
 }
 
 func (s *bookmarkService) GetBookmarks(ctx context.Context, userID string, page, limit int) (*GetBookmarksResult, error) {
-	span := newrelic.FromContext(ctx).StartSegment("GetBookmarks_Service")
+	span := newrelic.FromContext(ctx).StartSegment("GetBookmarks_BookmarkService")
 	defer span.End()
 
 	offset := (page - 1) * limit
