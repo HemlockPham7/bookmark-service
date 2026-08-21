@@ -7,6 +7,7 @@ import (
 	"github.com/HemlockPham7/common-libs/pkg/requestutils"
 	"github.com/HemlockPham7/common-libs/pkg/response"
 	"github.com/gin-gonic/gin"
+	"github.com/newrelic/go-agent/v3/newrelic"
 	"github.com/rs/zerolog/log"
 )
 
@@ -22,6 +23,9 @@ import (
 // @Security     BearerAuth
 // @Router       /v1/bookmarks/{id} [delete]
 func (h *bookmarkHandler) DeleteBookmarkByID(c *gin.Context) {
+	span := newrelic.FromContext(c).StartSegment("DeleteBookmarkByID_BookmarkHandler")
+	defer span.End()
+
 	uid, err := requestutils.GetUserIDFromRequest(c)
 	if err != nil {
 		return

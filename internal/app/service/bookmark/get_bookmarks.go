@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/HemlockPham7/bookmark-service/internal/app/model"
+	"github.com/newrelic/go-agent/v3/newrelic"
 )
 
 type GetBookmarksResult struct {
@@ -12,6 +13,9 @@ type GetBookmarksResult struct {
 }
 
 func (s *bookmarkService) GetBookmarks(ctx context.Context, userID string, page, limit int) (*GetBookmarksResult, error) {
+	span := newrelic.FromContext(ctx).StartSegment("GetBookmarks_BookmarkService")
+	defer span.End()
+
 	offset := (page - 1) * limit
 
 	bookmarks, total, err := s.bookmarkRepository.GetBookmarks(ctx, userID, limit, offset)

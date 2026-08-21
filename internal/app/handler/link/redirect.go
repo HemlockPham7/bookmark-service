@@ -7,6 +7,7 @@ import (
 	"github.com/HemlockPham7/bookmark-service/internal/app/service/link"
 	"github.com/HemlockPham7/common-libs/pkg/response"
 	"github.com/gin-gonic/gin"
+	"github.com/newrelic/go-agent/v3/newrelic"
 	"github.com/rs/zerolog/log"
 )
 
@@ -18,6 +19,9 @@ import (
 // @Success 302
 // @Router /v1/links/redirect/{code} [get]
 func (h *linkHandler) Redirect(c *gin.Context) {
+	span := newrelic.FromContext(c).StartSegment("Redirect_LinkHandler")
+	defer span.End()
+
 	code := c.Param("code")
 	if code == "" {
 		c.JSON(http.StatusBadRequest, response.InputErrResponse)

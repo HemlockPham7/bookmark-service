@@ -9,6 +9,7 @@ import (
 	"github.com/HemlockPham7/common-libs/pkg/requestutils"
 	"github.com/HemlockPham7/common-libs/pkg/response"
 	"github.com/gin-gonic/gin"
+	"github.com/newrelic/go-agent/v3/newrelic"
 	"github.com/rs/zerolog/log"
 )
 
@@ -36,6 +37,9 @@ type createBookmarkResponse struct {
 // @Security     BearerAuth
 // @Router       /v1/bookmarks [post]
 func (h *bookmarkHandler) CreateBookmark(c *gin.Context) {
+	span := newrelic.FromContext(c).StartSegment("CreateBookmark_BookmarkHandler")
+	defer span.End()
+
 	// get input
 	input, uid, err := requestutils.BindInputFromRequestWithAuth[createBookmarkRequest](c)
 	if err != nil {

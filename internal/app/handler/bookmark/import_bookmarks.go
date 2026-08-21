@@ -9,6 +9,7 @@ import (
 	"github.com/HemlockPham7/common-libs/pkg/requestutils"
 	"github.com/HemlockPham7/common-libs/pkg/response"
 	"github.com/gin-gonic/gin"
+	"github.com/newrelic/go-agent/v3/newrelic"
 	"github.com/rs/zerolog/log"
 )
 
@@ -29,6 +30,9 @@ var allowedFileTypes = []string{"text/csv", "aplication/csv", "text/plain", "app
 // @Success 200 {object} object{message=string} "Success"
 // @Router /v1/bookmarks/import [post]
 func (h *bookmarkHandler) ImportBookmarks(c *gin.Context) {
+	span := newrelic.FromContext(c).StartSegment("ImportBookmarks_BookmarkHandler")
+	defer span.End()
+
 	// Get uid
 	uid, err := requestutils.GetUserIDFromRequest(c)
 	if err != nil {

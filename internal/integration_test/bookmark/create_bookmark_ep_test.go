@@ -122,7 +122,7 @@ func TestBookmarkEndpoint_CreateBookmark(t *testing.T) {
 			},
 
 			expectedStatusCode:   http.StatusTooManyRequests,
-			expectedResponseBody: `"message":"Create a bookmark successfully!"`,
+			expectedResponseBody: `"error":"rate limit exceeded"`,
 		},
 	}
 

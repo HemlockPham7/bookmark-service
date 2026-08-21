@@ -7,6 +7,7 @@ import (
 	"github.com/HemlockPham7/common-libs/pkg/requestutils"
 	"github.com/HemlockPham7/common-libs/pkg/response"
 	"github.com/gin-gonic/gin"
+	"github.com/newrelic/go-agent/v3/newrelic"
 	"github.com/rs/zerolog/log"
 )
 
@@ -28,6 +29,9 @@ type updateBookmarkRequest struct {
 // @Security     BearerAuth
 // @Router       /v1/bookmarks/{id} [put]
 func (h *bookmarkHandler) UpdateBookmarkByID(c *gin.Context) {
+	span := newrelic.FromContext(c).StartSegment("UpdateBookmarkByID_BookmarkHandler")
+	defer span.End()
+
 	request, uid, err := requestutils.BindInputFromRequestWithAuth[updateBookmarkRequest](c)
 	if err != nil {
 		return

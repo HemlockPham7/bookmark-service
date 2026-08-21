@@ -5,6 +5,7 @@ import (
 
 	"github.com/HemlockPham7/common-libs/pkg/response"
 	"github.com/gin-gonic/gin"
+	"github.com/newrelic/go-agent/v3/newrelic"
 	"github.com/rs/zerolog/log"
 )
 
@@ -17,6 +18,9 @@ import (
 // @Success 200 {object} model.HealthCheckResponse
 // @Router /health-check [get]
 func (h *healthcheckHandler) HealthCheck(c *gin.Context) {
+	span := newrelic.FromContext(c).StartSegment("HealthCheck_HeathCheckHandler")
+	defer span.End()
+
 	msg, err := h.service.HealthCheck(c)
 	if err != nil {
 		log.Error().Err(err).Msg("Health-check error")

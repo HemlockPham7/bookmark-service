@@ -5,10 +5,14 @@ import (
 
 	"github.com/HemlockPham7/bookmark-service/internal/app/model"
 	"github.com/HemlockPham7/common-libs/pkg/dbutils"
+	"github.com/newrelic/go-agent/v3/newrelic"
 	"gorm.io/gorm/clause"
 )
 
 func (r *bookmarkRepository) UpdateBookmarkByID(ctx context.Context, updatedBookmark *model.Bookmark, userID, bookmarkID string) (*model.Bookmark, error) {
+	span := newrelic.FromContext(ctx).StartSegment("UpdateBookmarkByID_BookmarkRepository")
+	defer span.End()
+
 	returnedBookmark := &model.Bookmark{}
 
 	result := r.db.WithContext(ctx).

@@ -9,6 +9,7 @@ import (
 	"github.com/HemlockPham7/common-libs/pkg/requestutils"
 	"github.com/HemlockPham7/common-libs/pkg/response"
 	"github.com/gin-gonic/gin"
+	"github.com/newrelic/go-agent/v3/newrelic"
 	"github.com/rs/zerolog/log"
 )
 
@@ -33,6 +34,9 @@ type getBookmarksRequest struct {
 // @Security	 BearerAuth
 // @Router       /v1/bookmarks/get [get]
 func (h *bookmarkHandler) GetBookmarks(c *gin.Context) {
+	span := newrelic.FromContext(c).StartSegment("GetBookmarks_BookmarkHandler")
+	defer span.End()
+
 	request, uid, err := requestutils.BindInputFromRequestWithAuth[getBookmarksRequest](c)
 	if err != nil {
 		return
