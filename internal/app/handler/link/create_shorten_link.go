@@ -6,6 +6,7 @@ import (
 	"github.com/HemlockPham7/common-libs/pkg/requestutils"
 	"github.com/HemlockPham7/common-libs/pkg/response"
 	"github.com/gin-gonic/gin"
+	"github.com/newrelic/go-agent/v3/newrelic"
 	"github.com/rs/zerolog/log"
 )
 
@@ -24,6 +25,9 @@ type shortenInputBody struct {
 // @Success 200 {object} map[string]string
 // @Router /v1/links/shorten [post]
 func (h *linkHandler) ShortenLink(c *gin.Context) {
+	span := newrelic.FromContext(c).StartSegment("ShortenLink_LinkHandler")
+	defer span.End()
+
 	// doc input
 	input, err := requestutils.BindInputFromRequest[shortenInputBody](c)
 	if err != nil {

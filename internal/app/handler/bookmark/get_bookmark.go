@@ -34,7 +34,7 @@ type getBookmarksRequest struct {
 // @Security	 BearerAuth
 // @Router       /v1/bookmarks/get [get]
 func (h *bookmarkHandler) GetBookmarks(c *gin.Context) {
-	span := newrelic.FromContext(c).StartSegment("GetBookmarks_Handler")
+	span := newrelic.FromContext(c).StartSegment("GetBookmarks_BookmarkHandler")
 	defer span.End()
 
 	request, uid, err := requestutils.BindInputFromRequestWithAuth[getBookmarksRequest](c)
