@@ -23,6 +23,7 @@ import (
 	"github.com/HemlockPham7/common-libs/pkg/middleware"
 	"github.com/HemlockPham7/common-libs/pkg/ratelimitutils"
 	"github.com/HemlockPham7/common-libs/pkg/utils"
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/newrelic/go-agent/v3/integrations/nrgin"
 	"github.com/newrelic/go-agent/v3/newrelic"
@@ -146,6 +147,28 @@ func (e *engine) initMiddlewares() middlewares {
 func (e *engine) initRoutes() {
 	allHandlers := e.initHandlers()
 	allMiddlewares := e.initMiddlewares()
+
+	// cors
+	e.app.Use(cors.New(cors.Config{
+		AllowOrigins: []string{
+			"http://localhost:5173",
+		},
+		AllowMethods: []string{
+			"GET",
+			"POST",
+			"PUT",
+			"PATCH",
+			"DELETE",
+			"OPTIONS",
+		},
+		AllowHeaders: []string{
+			"Origin",
+			"Content-Type",
+			"Accept",
+			"Authorization",
+		},
+		AllowCredentials: true,
+	}))
 
 	// init newrelic
 	e.app.Use(nrgin.Middleware(e.nrClient))
