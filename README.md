@@ -97,6 +97,7 @@ user-service/
 
 #### Delete a bookmark
 
+![Delete bookmark](asset/delete-bookmark/img.png)
 
 #### Update a bookmark
 
