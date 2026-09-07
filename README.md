@@ -26,7 +26,7 @@ A bookmark service for the Bookmark Management system, following Clean Architect
 ## Project Structure
 
 ```
-user-service/
+bookmark-service/
 ├── .github/workflows/       # CI/CD pipelines
 ├── cmd/
 │   └── api/main.go          # API server entry point
@@ -77,7 +77,7 @@ user-service/
 
 #### Generate code
 
-
+![Generate Code](asset/generate-code/img.png)
 
 #### Check Health
 
