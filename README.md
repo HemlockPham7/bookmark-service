@@ -69,11 +69,11 @@ bookmark-service/
 
 #### Create a shorten link
 
-![Create Shorten Link](asset/create-shorten-link/img.png)
+![Create Shorten Link](asset/link/create-shorten-link/img.png)
 
 #### Redirect link
 
-![Redierct Link](asset/redirect-link/img.png)
+![Redierct Link](asset/link/redirect-link/img.png)
 
 #### Generate code
 
@@ -95,23 +95,23 @@ bookmark-service/
 
 #### Create a bookmark
 
-![Create bookmark](asset/create-bookmark/img.png)
+![Create bookmark](asset/bookmark/create-bookmark/img.png)
 
 #### Get a list of bookmarks
 
-![Get bookmarks](asset/get-bookmark/img.png)
+![Get bookmarks](asset/bookmark/get-bookmark/img.png)
 
 #### Import a csv file of bookmarks
 
-![Import bookmarks](asset/import-bookmarks/img.png)
+![Import bookmarks](asset/bookmark/import-bookmarks/img.png)
 
 #### Delete a bookmark
 
-![Delete bookmark](asset/delete-bookmark/img.png)
+![Delete bookmark](asset/bookmark/delete-bookmark/img.png)
 
 #### Update a bookmark
 
-![Update bookmark](asset/update-bookmark/img.png)
+![Update bookmark](asset/bookmark/update-bookmark/img.png)
 
 ---
 
