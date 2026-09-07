@@ -73,7 +73,7 @@ bookmark-service/
 
 #### Redirect link
 
-
+![Redierct Link](asset/redirect-link/img.png)
 
 #### Generate code
 
