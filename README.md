@@ -64,6 +64,8 @@ user-service/
 |--------|---------------------------|---------------------|
 | `POST` | `v1/links/shorten`        | Create shorten link |
 | `GET`  | `v1/links/redirect/:code` | Redirect link       |
+| `GET`  | `gencode`                 | Generate code       |
+| `GET`  | `health-check`            | Check health        |
 
 #### Create a shorten link
 
@@ -72,6 +74,14 @@ user-service/
 #### Redirect link
 
 
+
+#### Generate code
+
+
+
+#### Check Health
+
+![Check Health](asset/health-check/img.png)
 
 ### Protected (JWT Description)
 
