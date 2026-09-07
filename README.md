@@ -101,6 +101,7 @@ user-service/
 
 #### Update a bookmark
 
+![Update bookmark](asset/update-bookmark/img.png)
 
 ---
 
