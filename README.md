@@ -93,6 +93,7 @@ user-service/
 
 #### Import a csv file of bookmarks
 
+![Import bookmarks](asset/import-bookmarks/img.png)
 
 #### Delete a bookmark
 
