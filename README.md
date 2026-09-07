@@ -89,6 +89,7 @@ user-service/
 
 #### Get a list of bookmarks
 
+![Get bookmarks](asset/get-bookmark/img.png)
 
 #### Import a csv file of bookmarks
 

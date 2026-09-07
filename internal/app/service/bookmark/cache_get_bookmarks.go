@@ -9,6 +9,17 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
+// GetBookmarks retrieves a paginated list of bookmarks, using cached data when available.
+//
+// Parameters:
+//   - ctx: the context used to control the lifetime of the operation.
+//   - userID: the ID of the user whose bookmarks are being retrieved.
+//   - page: the page number to retrieve.
+//   - limit: the maximum number of bookmarks to return per page.
+//
+// Returns:
+//   - A paginated bookmark result.
+//   - An error if the underlying bookmark service fails to retrieve the bookmarks.
 func (s *bookmarkServiceWithCache) GetBookmarks(ctx context.Context, userID string, page, limit int) (*GetBookmarksResult, error) {
 	nrTransaction := newrelic.FromContext(ctx)
 	span := nrTransaction.StartSegment("GetBookmarks_BookmarkServiceWithCache")

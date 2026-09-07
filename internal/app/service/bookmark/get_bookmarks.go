@@ -12,6 +12,17 @@ type GetBookmarksResult struct {
 	Total     int64             `json:"total"`
 }
 
+// GetBookmarks retrieves a paginated list of bookmarks for the specified user.
+//
+// Parameters:
+//   - ctx: the context used to control the lifetime of the operation.
+//   - userID: the ID of the user whose bookmarks are being retrieved.
+//   - page: the page number to retrieve.
+//   - limit: the maximum number of bookmarks to return per page.
+//
+// Returns:
+//   - A paginated bookmark result.
+//   - An error if the bookmarks cannot be retrieved from the repository.
 func (s *bookmarkService) GetBookmarks(ctx context.Context, userID string, page, limit int) (*GetBookmarksResult, error) {
 	span := newrelic.FromContext(ctx).StartSegment("GetBookmarks_BookmarkService")
 	defer span.End()
