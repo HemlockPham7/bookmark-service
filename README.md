@@ -69,7 +69,7 @@ bookmark-service/
 
 #### Create a shorten link
 
-
+![Create Shorten Link](asset/create-shorten-link/img.png)
 
 #### Redirect link
 
