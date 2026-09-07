@@ -10,6 +10,8 @@ import (
 
 const codeLength = 8
 
+// Service defines the business logic for bookmark-related operations.
+//
 //go:generate mockery --name Service --filename service.go --outpkg mock_bookmark
 type Service interface {
 	CreateBookmark(ctx context.Context, description, url, userID string) (*model.Bookmark, error)
@@ -23,6 +25,14 @@ type bookmarkService struct {
 	codeGenerator      utils.GenCode
 }
 
+// NewService creates a new bookmark service.
+//
+// Parameters:
+//   - bookmarkRepository: the repository used to persist and retrieve bookmarks.
+//   - codeGenerator: the code generator used to generate unique bookmark codes.
+//
+// Returns:
+//   - A configured bookmark service.
 func NewService(bookmarkRepository bookmark.Repository, codeGenerator utils.GenCode) Service {
 	return &bookmarkService{
 		bookmarkRepository: bookmarkRepository,

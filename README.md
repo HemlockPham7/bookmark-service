@@ -85,6 +85,7 @@ user-service/
 
 #### Create a bookmark
 
+![Create bookmark](asset/create-bookmark/img.png)
 
 #### Get a list of bookmarks
 

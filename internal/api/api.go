@@ -33,7 +33,7 @@ import (
 	"gorm.io/gorm"
 )
 
-// Engine interface for starting the application
+// Engine defines the application lifecycle and HTTP serving behavior.
 type Engine interface {
 	Start() error
 	ServeHTTP(w http.ResponseWriter, req *http.Request)
@@ -50,6 +50,7 @@ type engine struct {
 	nrClient    *newrelic.Application
 }
 
+// EngineOpts contains the dependencies required to initialize the application engine.
 type EngineOpts struct {
 	App         *gin.Engine
 	Cfg         *Config
@@ -60,7 +61,9 @@ type EngineOpts struct {
 	NrClient    *newrelic.Application
 }
 
-// NewEngine creates a new engine
+// NewEngine creates and initializes a new application engine with the provided dependencies.
+//
+// It initializes the application's handlers, middlewares, and HTTP routes.
 func NewEngine(opts *EngineOpts) Engine {
 	app := &engine{
 		app:         opts.App,
@@ -75,12 +78,17 @@ func NewEngine(opts *EngineOpts) Engine {
 	return app
 }
 
-// Start starts the application
+// Start starts the HTTP server on the configured application port.
+//
+// Returns:
+//   - An error if the HTTP server fails to start.
 func (e *engine) Start() error {
 	return e.app.Run(fmt.Sprintf(":%s", e.cfg.AppPort))
 }
 
-// ServeHTTP to test the API endpoint
+// ServeHTTP serves an HTTP request using the application engine.
+//
+// It is primarily used for testing HTTP endpoints.
 func (e *engine) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	e.app.ServeHTTP(w, req)
 }
@@ -92,6 +100,7 @@ type handlers struct {
 	bookmarkHandler    bookmarkHdl.Handler
 }
 
+// initHandlers initializes the application's handlers and their required dependencies.
 func (e *engine) initHandlers() *handlers {
 	genCodeService := utils.NewGenCode()
 	genCodeHandler := genCodeHdl.NewHandler(genCodeService)
@@ -130,7 +139,7 @@ type middlewares struct {
 	rateLimit middleware.RateLimit
 }
 
-// initMiddlewares initializes the middlewares
+// initMiddlewares initializes the application's HTTP middlewares.
 func (e *engine) initMiddlewares() middlewares {
 	jwtAuth := middleware.NewJWTAuth(e.jwtVal)
 
@@ -143,7 +152,7 @@ func (e *engine) initMiddlewares() middlewares {
 	}
 }
 
-// initRoutes initializes the routes
+// initRoutes initializes the application's middleware stack and HTTP routes.
 func (e *engine) initRoutes() {
 	allHandlers := e.initHandlers()
 	allMiddlewares := e.initMiddlewares()
