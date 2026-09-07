@@ -8,6 +8,15 @@ import (
 	"github.com/newrelic/go-agent/v3/newrelic"
 )
 
+// CreateBookmark creates a new bookmark in the database.
+//
+// Parameters:
+//   - ctx: the context used to control the lifetime of the database operation.
+//   - bookmark: the bookmark to create.
+//
+// Returns:
+//   - The created bookmark.
+//   - An error if the bookmark cannot be created.
 func (r *bookmarkRepository) CreateBookmark(ctx context.Context, bookmark *model.Bookmark) (*model.Bookmark, error) {
 	span := newrelic.FromContext(ctx).StartSegment("CreateBookmark_BookmarkRepository")
 	defer span.End()

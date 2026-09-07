@@ -18,6 +18,8 @@ var (
 	ErrCodeNotFound = errors.New("code not found")
 )
 
+// Service defines the business logic for shortened link operations.
+//
 //go:generate mockery --name Service --filename service.go --outpkg mockLink
 type Service interface {
 	CreateShortenLink(ctx context.Context, url string, expSecond int64) (string, error)
@@ -30,6 +32,15 @@ type linkService struct {
 	codeGenerator      utils.GenCode
 }
 
+// NewLinkService creates a new link service.
+//
+// Parameters:
+//   - linkRepository: the repository used to store and retrieve shortened links.
+//   - bookmarkRepository: the repository used to retrieve bookmark information.
+//   - codeGenerator: the code generator used to generate shortened link codes.
+//
+// Returns:
+//   - A configured link service.
 func NewLinkService(linkRepository link.Repository, bookmarkRepository bookmark.Repository, codeGenerator utils.GenCode) Service {
 	return &linkService{linkRepository: linkRepository, bookmarkRepository: bookmarkRepository, codeGenerator: codeGenerator}
 }

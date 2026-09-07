@@ -9,6 +9,17 @@ import (
 	"gorm.io/gorm/clause"
 )
 
+// UpdateBookmarkByID updates a bookmark by its ID for the specified user.
+//
+// Parameters:
+//   - ctx: the context used to control the lifetime of the database operation.
+//   - updatedBookmark: the bookmark fields to update.
+//   - userID: the ID of the user who owns the bookmark.
+//   - bookmarkID: the ID of the bookmark to update.
+//
+// Returns:
+//   - The updated bookmark.
+//   - An error if the bookmark cannot be updated or does not exist.
 func (r *bookmarkRepository) UpdateBookmarkByID(ctx context.Context, updatedBookmark *model.Bookmark, userID, bookmarkID string) (*model.Bookmark, error) {
 	span := newrelic.FromContext(ctx).StartSegment("UpdateBookmarkByID_BookmarkRepository")
 	defer span.End()

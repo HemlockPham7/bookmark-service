@@ -17,6 +17,14 @@ type bookmarkServiceWithCache struct {
 	c cache.DB
 }
 
+// NewBookmarkServiceWithCache creates a new bookmark service with cache support.
+//
+// Parameters:
+//   - s: the underlying bookmark service used to perform bookmark operations.
+//   - c: the cache database used to store and invalidate bookmark data.
+//
+// Returns:
+//   - A bookmark service with cache support.
 func NewBookmarkServiceWithCache(s Service, c cache.DB) Service {
 	return &bookmarkServiceWithCache{s: s, c: c}
 }
